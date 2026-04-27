@@ -84,6 +84,7 @@ export default function PhotoUploadOCR({ onDataExtracted, onImageSaved }) {
       {/* Upload Section */}
       {!preview && (
         <div
+          onClick={() => document.getElementById('photo-upload')?.click()}
           style={{
             border: '2px dashed #7dd3fc',
             borderRadius: '8px',
@@ -101,15 +102,13 @@ export default function PhotoUploadOCR({ onDataExtracted, onImageSaved }) {
             style={{ display: 'none' }}
             id="photo-upload"
           />
-          <label htmlFor="photo-upload" style={{ cursor: 'pointer' }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>📸</div>
-            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-              Take or upload a photo
-            </div>
-            <div style={{ fontSize: '14px', color: '#666' }}>
-              Receipt, bill, or document photo
-            </div>
-          </label>
+          <div style={{ fontSize: '32px', marginBottom: '8px' }}>📸</div>
+          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+            Take or upload a photo
+          </div>
+          <div style={{ fontSize: '14px', color: '#666' }}>
+            Receipt, bill, or document photo
+          </div>
         </div>
       )}
 

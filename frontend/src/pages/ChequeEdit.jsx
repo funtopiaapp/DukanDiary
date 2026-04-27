@@ -121,12 +121,16 @@ const ChequeEdit = () => {
           required
         />
 
-        <FormInput
+        <FormSelect
           label="Bank Name"
           name="bank_name"
           value={form.bank_name}
           onChange={handleChange}
-          placeholder="e.g., ICICI Bank"
+          options={[
+            { value: 'Canara Bank', label: 'Canara Bank' },
+            { value: 'SBI', label: 'SBI' },
+            { value: 'Dhanalaxmi Bank', label: 'Dhanalaxmi Bank' }
+          ]}
           error={errors.bank_name}
           required
         />

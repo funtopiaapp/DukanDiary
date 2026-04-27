@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import FormInput from '../components/FormInput'
+import FormSelect from '../components/FormSelect'
 import DateInput from '../components/DateInput'
 import ToggleGroup from '../components/ToggleGroup'
 import PhotoUploadOCR from '../components/PhotoUploadOCR'
@@ -120,11 +121,16 @@ const ChequeAdd = () => {
           required
         />
 
-        <FormInput
+        <FormSelect
           label="Bank Name"
-          placeholder="HDFC Bank"
+          name="bank_name"
           value={form.bank_name}
           onChange={handleChange}
+          options={[
+            { value: 'Canara Bank', label: 'Canara Bank' },
+            { value: 'SBI', label: 'SBI' },
+            { value: 'Dhanalaxmi Bank', label: 'Dhanalaxmi Bank' }
+          ]}
           error={errors.bank_name}
           required
         />

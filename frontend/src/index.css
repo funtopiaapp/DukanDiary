@@ -36,7 +36,11 @@ body {
   }
 
   .input-field {
-    @apply w-full min-h-[52px] px-4 py-3 border-2 border-gray-200 rounded-lg text-lg focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100;
+    @apply w-full px-3 py-2 md:py-3 border-2 border-gray-200 rounded-lg text-base md:text-lg focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100 min-h-[44px] md:min-h-[52px] pointer-events-auto cursor-text;
+  }
+
+  .input-field:disabled {
+    @apply bg-gray-100 cursor-not-allowed pointer-events-none;
   }
 
   .card {
@@ -64,11 +68,11 @@ body {
   }
 
   .form-section {
-    @apply space-y-6 p-6;
+    @apply space-y-4 p-4 md:space-y-6 md:p-6;
   }
 
   .form-group {
-    @apply space-y-2;
+    @apply space-y-1 md:space-y-2;
   }
 
   .form-label {

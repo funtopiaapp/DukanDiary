@@ -1,7 +1,17 @@
 import axios from 'axios'
 import { authService } from './authService'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+// Use current host for API calls (works on both localhost and network)
+const getAPIBaseURL = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL
+  }
+  const host = window.location.hostname
+  const port = 5001
+  return `http://${host}:${port}/api`
+}
+
+const API_BASE_URL = getAPIBaseURL()
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

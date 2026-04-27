@@ -28,19 +28,23 @@ const Login = () => {
 
     try {
       setLoading(true)
+      console.log('Attempting to verify PIN:', pin)
       const result = await authService.verifyPIN(pin)
+      console.log('PIN verification result:', result)
 
       if (result.success && result.employee) {
         authService.setSession(result.employee)
         success(`Welcome, ${result.employee.name}!`)
         navigate('/')
       } else {
+        console.warn('Invalid PIN entered')
         error('Invalid PIN. Please try again.')
         setPin('')
       }
     } catch (err) {
       console.error('Login error:', err)
-      error('Login failed. Please check your connection.')
+      const errorMsg = err.response?.data?.error || err.message || 'Connection error'
+      error(`Login failed: ${errorMsg}`)
       setPin('')
     } finally {
       setLoading(false)
@@ -55,27 +59,27 @@ const Login = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-white flex items-center justify-center p-4">
       <LoadingOverlay isLoading={loading} message="Verifying PIN..." />
 
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🧵</div>
-          <h1 className="text-4xl font-bold text-gray-900">DukanDiary</h1>
-          <p className="text-xl text-gray-600 mt-2">Textile Retail Management</p>
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-2">🧵</div>
+          <h1 className="text-3xl font-bold text-gray-900">DukanDiary</h1>
+          <p className="text-base text-gray-600 mt-1">Textile Retail Management</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <p className="text-xl font-semibold text-center text-gray-700 mb-6">
+        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+          <p className="text-lg font-semibold text-center text-gray-700 mb-4">
             Enter 4-Digit PIN
           </p>
 
           {/* PIN Display */}
-          <div className="flex justify-center gap-4 mb-8">
+          <div className="flex justify-center gap-3 mb-6">
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="w-16 h-16 rounded-lg border-3 border-sky-500 flex items-center justify-center bg-sky-50 text-3xl font-bold text-sky-600"
+                className="w-12 h-12 rounded-lg border-2 border-sky-500 flex items-center justify-center bg-sky-50 text-2xl font-bold text-sky-600"
               >
                 {pin[i] ? '●' : ''}
               </div>
@@ -83,7 +87,7 @@ const Login = () => {
           </div>
 
           {/* Number Pad */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-4">
             {numberPad.map((row, rowIdx) => (
               <div key={rowIdx} className="contents">
                 {row.map(num => (
@@ -91,7 +95,7 @@ const Login = () => {
                     key={num}
                     onClick={() => handleNumberClick(num)}
                     disabled={loading}
-                    className="bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-3xl font-bold text-gray-900 rounded-xl py-6 transition-all disabled:opacity-50"
+                    className="bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-2xl font-bold text-gray-900 rounded-lg py-4 transition-all disabled:opacity-50"
                   >
                     {num}
                   </button>
@@ -101,24 +105,24 @@ const Login = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-2 mt-4">
             <button
               onClick={handleSubmit}
               disabled={pin.length !== 4 || loading}
-              className="btn-primary disabled:opacity-50"
+              className="btn-primary disabled:opacity-50 py-3"
             >
               Login
             </button>
             <button
               onClick={handleBackspace}
               disabled={loading}
-              className="btn-secondary disabled:opacity-50"
+              className="btn-secondary disabled:opacity-50 py-3"
             >
               ← Backspace
             </button>
           </div>
 
-          <p className="text-center text-gray-500 text-base mt-6">
+          <p className="text-center text-gray-500 text-sm mt-4">
             Demo PIN: 1234
           </p>
         </div>

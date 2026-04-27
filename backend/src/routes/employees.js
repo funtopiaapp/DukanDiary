@@ -4,6 +4,27 @@ import { AppError } from '../middleware/errorHandler.js'
 
 const router = express.Router()
 
+// Debug endpoint - shows all employees including inactive (remove in production)
+router.get('/debug/all', async (req, res, next) => {
+  try {
+    const { data, error } = await supabase
+      .from('employees')
+      .select('id, name, pin, role, is_active')
+      .order('name')
+
+    if (error) throw error
+
+    res.json({
+      success: true,
+      data,
+      count: data.length,
+      debug: true
+    })
+  } catch (error) {
+    next(new AppError(error.message, 500))
+  }
+})
+
 // GET all active employees
 router.get('/', async (req, res, next) => {
   try {

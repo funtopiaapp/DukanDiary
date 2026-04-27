@@ -4,22 +4,37 @@ export const authService = {
   // Verify PIN and get employee details
   verifyPIN: async (enteredPin) => {
     try {
+      console.log('Fetching employees from API...')
       // Fetch employees from API
       const response = await api.getEmployees()
+      console.log('API Response:', response)
+
       const employees = response.data.data
+      console.log('Employees list:', employees)
+      console.log('Looking for PIN:', enteredPin)
 
       // Find employee with matching PIN
-      const employee = employees.find(emp => emp.pin === enteredPin && emp.is_active)
+      const employee = employees.find(emp => {
+        console.log(`Checking employee ${emp.name}: pin=${emp.pin}, is_active=${emp.is_active}`)
+        return emp.pin === enteredPin && emp.is_active
+      })
 
       if (employee) {
+        console.log('Employee found:', employee.name)
         // Log the login
         await authService.logAudit('LOGIN', employee.id, employee.name, null, null)
         return { success: true, employee }
       }
 
+      console.warn('No matching employee found for PIN')
       return { success: false, employee: null }
     } catch (error) {
       console.error('PIN verification error:', error)
+      console.error('Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      })
       throw error
     }
   },

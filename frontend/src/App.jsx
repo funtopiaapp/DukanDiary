@@ -52,8 +52,14 @@ function App() {
   const { toasts, removeToast } = useToast()
   const isAuthenticated = authService.isAuthenticated()
 
+  // Get the base path for the router (for GitHub Pages)
+  const getBasePath = () => {
+    const path = import.meta.env.BASE_URL || '/'
+    return path
+  }
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={getBasePath()}>
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       <Routes>
         <Route path="/login" element={<Login />} />

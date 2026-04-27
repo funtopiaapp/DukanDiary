@@ -6,6 +6,13 @@ const getAPIBaseURL = () => {
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL
   }
+
+  // For GitHub Pages production, use the Railway backend
+  if (window.location.hostname.includes('github.io')) {
+    return 'https://dukandiary-production.up.railway.app/api'
+  }
+
+  // For localhost/local network, use dynamic hostname
   const host = window.location.hostname
   const port = 5001
   return `http://${host}:${port}/api`

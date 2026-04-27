@@ -16,7 +16,7 @@ const chequeStatusSchema = Joi.object({
 
 // GET all cheques with filters
 router.get('/', validateQuery(chequeFilterSchema), async (req, res) => {
-  let query = supabase.from('cheques').select('*')
+  let query = supabase.from('cheques').select('*').eq('is_deleted', false)
 
   if (req.validatedQuery.status) {
     query = query.eq('status', req.validatedQuery.status)
@@ -138,15 +138,35 @@ router.patch('/:id/status', validateRequest(chequeStatusSchema), async (req, res
 
 // DELETE cheque
 router.delete('/:id', async (req, res) => {
-  const { error } = await supabase
+  const employeeId = req.headers['x-employee-id']
+
+  const { data, error } = await supabase
     .from('cheques')
-    .delete()
+    .update({
+      is_deleted: true,
+      updated_by: employeeId,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', req.params.id)
+    .select()
+    .single()
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the deletion
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'DELETE',
+      employee_id: employeeId,
+      table_name: 'cheques',
+      record_id: req.params.id,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
+    data,
     message: 'Cheque deleted successfully'
   })
 })

@@ -47,6 +47,7 @@ export const api = {
 
   // Expenses
   getExpenses: (params) => apiClient.get('/expenses', { params }),
+  getExpense: (id) => apiClient.get(`/expenses/${id}`),
   getTodayExpenseTotal: () => apiClient.get('/expenses/today-total'),
   createExpense: (data) => apiClient.post('/expenses', data),
   updateExpense: (id, data) => apiClient.patch(`/expenses/${id}`, data),

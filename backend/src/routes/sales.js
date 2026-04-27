@@ -7,7 +7,7 @@ const router = express.Router()
 
 // GET all sales with date range filter
 router.get('/', validateQuery(dateRangeSchema), async (req, res) => {
-  let query = supabase.from('sales').select('*')
+  let query = supabase.from('sales').select('*').eq('is_deleted', false)
 
   if (req.validatedQuery.start_date) {
     // query = query.gte('date', req.validatedQuery.start_date)
@@ -102,15 +102,35 @@ router.patch('/:id', validateRequest(salesSchema), async (req, res) => {
 
 // DELETE sale
 router.delete('/:id', async (req, res) => {
-  const { error } = await supabase
+  const employeeId = req.headers['x-employee-id']
+
+  const { data, error } = await supabase
     .from('sales')
-    .delete()
+    .update({
+      is_deleted: true,
+      updated_by: employeeId,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', req.params.id)
+    .select()
+    .single()
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the deletion
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'DELETE',
+      employee_id: employeeId,
+      table_name: 'sales',
+      record_id: req.params.id,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
+    data,
     message: 'Sale record deleted successfully'
   })
 })

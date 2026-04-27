@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard'
 import StockAdd from './pages/StockAdd'
 import StockList from './pages/StockList'
 import ExpenseAdd from './pages/ExpenseAdd'
+import ExpenseEdit from './pages/ExpenseEdit'
 import ExpenseList from './pages/ExpenseList'
 import ChequeAdd from './pages/ChequeAdd'
 import ChequeList from './pages/ChequeList'
@@ -109,6 +110,17 @@ function App() {
             <ProtectedRoute>
               <>
                 <ExpenseAdd />
+                <TabNavigation />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expenses/edit/:id"
+          element={
+            <ProtectedRoute>
+              <>
+                <ExpenseEdit />
                 <TabNavigation />
               </>
             </ProtectedRoute>

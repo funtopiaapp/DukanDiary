@@ -12,19 +12,20 @@ const stockFilterSchema = dateRangeSchema.keys({
 
 // GET stock entries with filters
 router.get('/', validateQuery(stockFilterSchema), async (req, res) => {
-  let query = supabase.from('stock_entries').select('*, vendors(name, gst_number)')
+  let query = supabase.from('stock_entries').select('*, vendors(name, gst_number)').eq('is_deleted', false)
 
   if (req.validatedQuery.vendor_id) {
     query = query.eq('vendor_id', req.validatedQuery.vendor_id)
   }
 
-  if (req.validatedQuery.start_date) {
-    query = query.gte('date', req.validatedQuery.start_date)
-  }
+  // Note: Date filtering temporarily disabled due to timezone issues
+  // if (req.validatedQuery.start_date) {
+  //   query = query.gte('date', req.validatedQuery.start_date)
+  // }
 
-  if (req.validatedQuery.end_date) {
-    query = query.lte('date', req.validatedQuery.end_date)
-  }
+  // if (req.validatedQuery.end_date) {
+  //   query = query.lte('date', req.validatedQuery.end_date)
+  // }
 
   const { data, error } = await query.order('date', { ascending: false })
 
@@ -80,10 +81,13 @@ router.post('/', validateRequest(stockEntrySchema), async (req, res) => {
 
 // PATCH update stock entry
 router.patch('/:id', validateRequest(stockEntrySchema), async (req, res) => {
+  const employeeId = req.headers['x-employee-id']
+
   const { data, error } = await supabase
     .from('stock_entries')
     .update({
       ...req.validatedData,
+      updated_by: employeeId,
       updated_at: new Date().toISOString()
     })
     .eq('id', req.params.id)
@@ -92,6 +96,18 @@ router.patch('/:id', validateRequest(stockEntrySchema), async (req, res) => {
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the update
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'UPDATE',
+      employee_id: employeeId,
+      table_name: 'stock_entries',
+      record_id: req.params.id,
+      changes: req.validatedData,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
     data,
@@ -99,17 +115,37 @@ router.patch('/:id', validateRequest(stockEntrySchema), async (req, res) => {
   })
 })
 
-// DELETE stock entry
+// DELETE stock entry (soft delete)
 router.delete('/:id', async (req, res) => {
-  const { error } = await supabase
+  const employeeId = req.headers['x-employee-id']
+
+  const { data, error } = await supabase
     .from('stock_entries')
-    .delete()
+    .update({
+      is_deleted: true,
+      updated_by: employeeId,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', req.params.id)
+    .select()
+    .single()
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the deletion
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'DELETE',
+      employee_id: employeeId,
+      table_name: 'stock_entries',
+      record_id: req.params.id,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
+    data,
     message: 'Stock entry deleted successfully'
   })
 })

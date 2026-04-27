@@ -32,8 +32,8 @@ const StockList = () => {
           api.getStock(filters),
           api.getVendors()
         ])
-        setStocks(stockRes.data)
-        setVendors(vendorRes.data)
+        setStocks(stockRes.data.data || [])
+        setVendors(vendorRes.data.data || [])
       } catch (err) {
         showError('Failed to load stock entries')
       } finally {

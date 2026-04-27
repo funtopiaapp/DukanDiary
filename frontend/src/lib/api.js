@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { authService } from './authService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
 
@@ -8,6 +9,15 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json'
   }
+})
+
+// Add employee ID to all requests for audit logging
+apiClient.interceptors.request.use(config => {
+  const employee = authService.getCurrentEmployee()
+  if (employee?.id) {
+    config.headers['X-Employee-ID'] = employee.id
+  }
+  return config
 })
 
 // Add request interceptor for error handling

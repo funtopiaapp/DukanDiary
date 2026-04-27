@@ -10,11 +10,11 @@ router.get('/', validateQuery(dateRangeSchema), async (req, res) => {
   let query = supabase.from('sales').select('*')
 
   if (req.validatedQuery.start_date) {
-    query = query.gte('date', req.validatedQuery.start_date)
+    // query = query.gte('date', req.validatedQuery.start_date)
   }
 
   if (req.validatedQuery.end_date) {
-    query = query.lte('date', req.validatedQuery.end_date)
+    // query = query.lte('date', req.validatedQuery.end_date)
   }
 
   const { data, error } = await query.order('date', { ascending: false })

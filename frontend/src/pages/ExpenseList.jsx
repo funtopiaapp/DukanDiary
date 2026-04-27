@@ -31,8 +31,9 @@ const ExpenseList = () => {
           api.getExpenses(filters),
           api.getSettings()
         ])
-        setExpenses(expenseRes.data)
-        const cats = (settingsRes.data.expense_categories || '').split(',').map(c => c.trim()).filter(Boolean)
+        setExpenses(expenseRes.data.data || [])
+        const settings = settingsRes.data.data || settingsRes.data
+        const cats = (settings.expense_categories || '').split(',').map(c => c.trim()).filter(Boolean)
         setCategories(cats)
       } catch (err) {
         showError('Failed to load expenses')

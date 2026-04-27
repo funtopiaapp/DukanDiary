@@ -21,7 +21,7 @@ const ChequeList = () => {
       try {
         setLoading(true)
         const res = await api.getCheques(statusFilter ? { status: statusFilter } : {})
-        setCheques(res.data)
+        setCheques(res.data.data || [])
       } catch (err) {
         showError('Failed to load cheques')
       } finally {

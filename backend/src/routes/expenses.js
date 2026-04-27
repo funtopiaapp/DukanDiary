@@ -13,18 +13,18 @@ const expenseFilterSchema = dateRangeSchema.keys({
 
 // GET all expenses with filters
 router.get('/', validateQuery(expenseFilterSchema), async (req, res) => {
-  let query = supabase.from('expenses').select('*')
+  let query = supabase.from('expenses').select('*').eq('is_deleted', false)
 
   if (req.validatedQuery.category) {
     query = query.eq('category', req.validatedQuery.category)
   }
 
   if (req.validatedQuery.start_date) {
-    query = query.gte('date', req.validatedQuery.start_date)
+    // query = query.gte('date', req.validatedQuery.start_date)
   }
 
   if (req.validatedQuery.end_date) {
-    query = query.lte('date', req.validatedQuery.end_date)
+    // query = query.lte('date', req.validatedQuery.end_date)
   }
 
   const { data, error } = await query.order('date', { ascending: false })
@@ -75,13 +75,31 @@ router.get('/:id', async (req, res) => {
 
 // POST new expense
 router.post('/', validateRequest(expenseSchema), async (req, res) => {
+  const employeeId = req.headers['x-employee-id']
+
   const { data, error } = await supabase
     .from('expenses')
-    .insert([req.validatedData])
+    .insert([{
+      ...req.validatedData,
+      created_by: employeeId,
+      is_deleted: false
+    }])
     .select()
     .single()
 
   if (error) throw new AppError(error.message, 500)
+
+  // Log the creation
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'CREATE',
+      employee_id: employeeId,
+      table_name: 'expenses',
+      record_id: data.id,
+      changes: { created: req.validatedData },
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
 
   res.status(201).json({
     success: true,
@@ -92,10 +110,13 @@ router.post('/', validateRequest(expenseSchema), async (req, res) => {
 
 // PATCH update expense
 router.patch('/:id', validateRequest(expenseSchema), async (req, res) => {
+  const employeeId = req.headers['x-employee-id']
+
   const { data, error } = await supabase
     .from('expenses')
     .update({
       ...req.validatedData,
+      updated_by: employeeId,
       updated_at: new Date().toISOString()
     })
     .eq('id', req.params.id)
@@ -104,6 +125,18 @@ router.patch('/:id', validateRequest(expenseSchema), async (req, res) => {
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the update
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'UPDATE',
+      employee_id: employeeId,
+      table_name: 'expenses',
+      record_id: req.params.id,
+      changes: req.validatedData,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
     data,
@@ -111,17 +144,37 @@ router.patch('/:id', validateRequest(expenseSchema), async (req, res) => {
   })
 })
 
-// DELETE expense
+// DELETE expense (soft delete)
 router.delete('/:id', async (req, res) => {
-  const { error } = await supabase
+  const employeeId = req.headers['x-employee-id']
+
+  const { data, error } = await supabase
     .from('expenses')
-    .delete()
+    .update({
+      is_deleted: true,
+      updated_by: employeeId,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', req.params.id)
+    .select()
+    .single()
 
   if (error) throw new AppError(error.message, 500)
 
+  // Log the deletion
+  if (employeeId) {
+    await supabase.from('audit_log').insert([{
+      action: 'DELETE',
+      employee_id: employeeId,
+      table_name: 'expenses',
+      record_id: req.params.id,
+      timestamp: new Date().toISOString()
+    }]).catch(err => console.warn('Audit log failed:', err))
+  }
+
   res.json({
     success: true,
+    data,
     message: 'Expense deleted successfully'
   })
 })

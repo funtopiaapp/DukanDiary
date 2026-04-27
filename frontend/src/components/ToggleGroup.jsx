@@ -17,8 +17,8 @@ const ToggleGroup = ({ label, options = [], value, onChange, required = false })
             type="button"
             className={`flex-1 min-h-[52px] px-4 py-3 rounded-lg font-semibold transition-all text-lg ${
               value === (option.value || option)
-                ? 'bg-orange-600 text-white'
-                : 'border-2 border-gray-300 text-gray-700 hover:border-orange-600'
+                ? 'bg-sky-500 text-white'
+                : 'border-2 border-gray-300 text-gray-700 hover:border-sky-500'
             }`}
           >
             {option.label || option}

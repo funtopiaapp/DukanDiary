@@ -41,7 +41,7 @@ const ExpenseAdd = () => {
           api.getCategories(),
           api.getTodayExpenseTotal()
         ])
-        setCategories(categoriesRes.data)
+        setCategories(categoriesRes.data.data || [])
         setTodayTotal(todayRes.data.total_amount || 0)
       } catch (err) {
         showError('Failed to load data')
@@ -177,7 +177,7 @@ const ExpenseAdd = () => {
             { value: true, label: '📸 Photo of Receipt' }
           ]}
           value={usePhotoMode}
-          onChange={(value) => setUsePhotoMode(value === 'true' || value === true)}
+          onChange={setUsePhotoMode}
           required
         />
 

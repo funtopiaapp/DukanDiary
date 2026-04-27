@@ -35,21 +35,23 @@ const Dashboard = () => {
 
         // This month stock
         const stockRes = await api.getStock({ start_date: startOfMonth, end_date: today })
-        const stockTotal = stockRes.data.reduce((sum, item) => sum + item.total_amount, 0)
+        const stockData = stockRes.data.data || []
+        const stockTotal = stockData.reduce((sum, item) => sum + item.total_amount, 0)
         setMonthStock(stockTotal)
 
         // This month sales
         const salesRes = await api.getSales({ start_date: startOfMonth, end_date: today })
-        const salesTotal = salesRes.data.reduce((sum, item) => sum + item.total_amount, 0)
+        const salesData = salesRes.data.data || []
+        const salesTotal = salesData.reduce((sum, item) => sum + item.total_amount, 0)
         setMonthSales(salesTotal)
 
         // Pending cheques
         const chequesRes = await api.getCheques({ status: 'Issued' })
-        setPendingCheques(chequesRes.data.length)
+        setPendingCheques((chequesRes.data.data || []).length)
 
         // Upcoming cheques
         const upcomingRes = await api.getUpcomingCheques()
-        setUpcomingCheques(upcomingRes.data)
+        setUpcomingCheques(upcomingRes.data.data || [])
       } catch (err) {
         showError('Failed to load dashboard data')
       } finally {

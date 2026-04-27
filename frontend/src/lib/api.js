@@ -41,6 +41,7 @@ export const api = {
 
   // Stock
   getStock: (params) => apiClient.get('/stock', { params }),
+  getStockItem: (id) => apiClient.get(`/stock/${id}`),
   createStock: (data) => apiClient.post('/stock', data),
   updateStock: (id, data) => apiClient.patch(`/stock/${id}`, data),
   deleteStock: (id) => apiClient.delete(`/stock/${id}`),
@@ -55,6 +56,7 @@ export const api = {
 
   // Cheques
   getCheques: (params) => apiClient.get('/cheques', { params }),
+  getCheque: (id) => apiClient.get(`/cheques/${id}`),
   getUpcomingCheques: () => apiClient.get('/cheques/upcoming'),
   createCheque: (data) => apiClient.post('/cheques', data),
   updateCheque: (id, data) => apiClient.patch(`/cheques/${id}`, data),
@@ -63,6 +65,7 @@ export const api = {
 
   // Sales
   getSales: (params) => apiClient.get('/sales', { params }),
+  getSale: (id) => apiClient.get(`/sales/${id}`),
   createSale: (data) => apiClient.post('/sales', data),
   updateSale: (id, data) => apiClient.patch(`/sales/${id}`, data),
   deleteSale: (id) => apiClient.delete(`/sales/${id}`),

@@ -159,14 +159,14 @@ const StockList = () => {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={() => navigate(`/stock/edit/${stock.id}`, { state: { stock } })}
-                    className="flex-1 bg-blue-600 text-white min-h-[52px] rounded-lg font-semibold hover:bg-blue-700"
+                    className="flex-1 bg-sky-500 text-white min-h-[52px] rounded-lg font-semibold hover:bg-sky-600"
                   >
                     ✏️ Edit
                   </button>
                   <button
                     onClick={() => handleDelete(stock.id)}
                     disabled={deleting === stock.id}
-                    className="flex-1 bg-red-700 text-white min-h-[52px] rounded-lg font-semibold hover:bg-red-800 disabled:bg-gray-400"
+                    className="flex-1 bg-red-600 text-white min-h-[52px] rounded-lg font-semibold hover:bg-red-700 disabled:bg-gray-400"
                   >
                     {deleting === stock.id ? <LoadingSpinner size="sm" /> : '🗑️ Delete'}
                   </button>

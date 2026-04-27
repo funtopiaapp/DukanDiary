@@ -149,13 +149,13 @@ const ChequeList = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={() => navigate(`/cheques/edit/${cheque.id}`, { state: { cheque } })}
-                      className="flex-1 bg-blue-600 text-white min-h-[52px] rounded-lg font-semibold"
+                      className="flex-1 bg-sky-500 text-white min-h-[52px] rounded-lg font-semibold hover:bg-sky-600"
                     >
                       ✏️ Edit
                     </button>
                     <button
                       onClick={() => handleDelete(cheque.id)}
-                      className="flex-1 bg-red-700 text-white min-h-[52px] rounded-lg font-semibold"
+                      className="flex-1 bg-red-600 text-white min-h-[52px] rounded-lg font-semibold hover:bg-red-700"
                     >
                       🗑️ Delete
                     </button>

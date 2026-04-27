@@ -9,13 +9,16 @@ import { authService } from './lib/authService'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import StockAdd from './pages/StockAdd'
+import StockEdit from './pages/StockEdit'
 import StockList from './pages/StockList'
 import ExpenseAdd from './pages/ExpenseAdd'
 import ExpenseEdit from './pages/ExpenseEdit'
 import ExpenseList from './pages/ExpenseList'
 import ChequeAdd from './pages/ChequeAdd'
+import ChequeEdit from './pages/ChequeEdit'
 import ChequeList from './pages/ChequeList'
 import SalesAdd from './pages/SalesAdd'
+import SalesEdit from './pages/SalesEdit'
 import Reports from './pages/Reports'
 import BankReconciliation from './pages/BankReconciliation'
 import Settings from './pages/Settings'
@@ -91,6 +94,17 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/stock/edit/:id"
+          element={
+            <ProtectedRoute>
+              <>
+                <StockEdit />
+                <TabNavigation />
+              </>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Expense Routes */}
         <Route
@@ -150,6 +164,17 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/cheques/edit/:id"
+          element={
+            <ProtectedRoute>
+              <>
+                <ChequeEdit />
+                <TabNavigation />
+              </>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Sales Routes */}
         <Route
@@ -158,6 +183,17 @@ function App() {
             <ProtectedRoute>
               <>
                 <SalesAdd />
+                <TabNavigation />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sales/edit/:id"
+          element={
+            <ProtectedRoute>
+              <>
+                <SalesEdit />
                 <TabNavigation />
               </>
             </ProtectedRoute>

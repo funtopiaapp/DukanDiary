@@ -170,7 +170,11 @@ const ChequeEdit = () => {
           label="Status"
           name="status"
           value={form.status}
-          options={['Issued', 'Cleared', 'Bounced']}
+          options={[
+            { value: 'Issued', label: 'Issued' },
+            { value: 'Cleared', label: 'Cleared' },
+            { value: 'Bounced', label: 'Bounced' }
+          ]}
           onChange={handleChange}
           required
         />

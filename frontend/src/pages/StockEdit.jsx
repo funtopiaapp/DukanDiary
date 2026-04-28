@@ -161,7 +161,10 @@ const StockEdit = () => {
             label="Unit"
             name="unit"
             value={form.unit}
-            options={['metres', 'pieces']}
+            options={[
+              { value: 'metres', label: 'Metres' },
+              { value: 'pieces', label: 'Pieces' }
+            ]}
             onChange={handleChange}
             required
           />

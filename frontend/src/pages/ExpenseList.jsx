@@ -81,7 +81,7 @@ const ExpenseList = () => {
           />
           <FormSelect
             label="Category"
-            options={categories}
+            options={categories.map(cat => ({ value: cat, label: cat }))}
             value={filters.category}
             onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
           />

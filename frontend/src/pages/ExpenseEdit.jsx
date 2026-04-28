@@ -113,7 +113,7 @@ const ExpenseEdit = () => {
           label="Category"
           name="category"
           value={form.category}
-          options={categories}
+          options={categories.map(cat => ({ value: cat.name, label: cat.name }))}
           onChange={handleChange}
           error={errors.category}
           required
@@ -145,7 +145,11 @@ const ExpenseEdit = () => {
           label="Payment Mode"
           name="payment_mode"
           value={form.payment_mode}
-          options={['Cash', 'UPI', 'Bank']}
+          options={[
+            { value: 'Cash', label: 'Cash' },
+            { value: 'UPI', label: 'UPI' },
+            { value: 'Bank', label: 'Bank' }
+          ]}
           onChange={handleChange}
           required
         />

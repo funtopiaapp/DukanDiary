@@ -129,7 +129,11 @@ const SalesEdit = () => {
           label="Period Type"
           name="period_type"
           value={form.period_type}
-          options={['daily', 'monthly', 'yearly']}
+          options={[
+            { value: 'daily', label: 'Daily' },
+            { value: 'monthly', label: 'Monthly' },
+            { value: 'yearly', label: 'Yearly' }
+          ]}
           onChange={handleChange}
           required
         />
